@@ -5,9 +5,7 @@ from reportlab.pdfgen import canvas
 
 app = QtWidgets.QApplication([])
 agenda = uic.loadUi('agenda.ui')
-
-agenda.show()
-app.exec()
+contatos = uic.loadUi('userSignedUp.ui')
 
 db = mysql.connector.connect(
   host = 'localhost',
@@ -16,7 +14,48 @@ db = mysql.connector.connect(
   database = 'agenda'
 )
 
-id = agenda.lineEdit.text()
-nome = agenda.lineEdit_2.text()
-email = agenda.lineEdit_3.text()
-telefone = agenda.lineEdit_4.text()
+def cadastrarContato():
+    nome = agenda.nome.text()
+    email = agenda.email.text()
+    telefone = agenda.telefone.text()
+
+    if agenda.residencial.isChecked():
+        tipoTelefone = 'residencial'
+    elif agenda.celular.isChecked():
+        tipoTelefone = 'celular'
+    else:
+        tipoTelefone = 'nao informado'
+
+    cursor = db.cursor()
+
+    querySQL = 'insert into contatos(nome, email, telefone, tipoTelefone)  values(%s, %s, %s, %s);'
+    dados = (str(nome), str(email), str(telefone), tipoTelefone)
+    cursor.execute(querySQL, dados)
+    db.commit()
+
+def consultarContato():
+    contatos.show()
+
+    cursor = db.cursor()
+
+    querySQL = 'select * from contatos'
+    cursor.execute(querySQL)
+    dados = cursor.fetchall()
+    db.commit()
+
+    contatos.listaContatos.setHeaderLabels(["nome", "email", "telefone", "tipo telefone"])
+
+def gerarPDF():
+    pass
+
+def excluirContato():
+    pass
+
+agenda.cadastrarContatos.clicked.connect(cadastrarContato)
+agenda.consultarContatos.clicked.connect(consultarContato)
+
+# contatos.gerarPDF.clicked.connect(gerarPDF)
+# contatos.excluirContato.clicked.connect(excluirContato)
+
+agenda.show()
+app.exec()
