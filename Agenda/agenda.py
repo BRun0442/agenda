@@ -38,10 +38,10 @@ def consultarContato():
 
     cursor = db.cursor()
 
-    querySQL = 'select nome, email, telefone, tipoTelefone from contatos'
+    querySQL = 'SELECT nome, email, telefone, tipoTelefone from contatos'
     cursor.execute(querySQL)
     dados = cursor.fetchall()
-    # db.commit()
+    db.commit()
 
     contatos.listaContatos.setRowCount(len(dados))
     contatos.listaContatos.setColumnCount(4)
@@ -54,10 +54,23 @@ def gerarPDF():
     pass
 
 def excluirContato():
-    pass
+    linhaAtual = contatos.listaContatos.currentRow()
+    contatos.listaContatos.removeRow(linhaAtual)
+
+    cursor = db.cursor()
+    querySQL = 'SELECT id from contatos'
+    cursor.execute(querySQL)
+    dados = cursor.fetchall()
+
+    querySQL = 'DELETE from contatos where id =' +  str(dados[linhaAtual][0])
+    cursor.execute(querySQL)
+
+    db.commit()
+
 
 agenda.cadastrarContatos.clicked.connect(cadastrarContato)
 agenda.consultarContatos.clicked.connect(consultarContato)
+contatos.excluirContato.clicked.connect(excluirContato)
 
 # contatos.gerarPDF.clicked.connect(gerarPDF)
 # contatos.excluirContato.clicked.connect(excluirContato)

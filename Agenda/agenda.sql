@@ -12,4 +12,4 @@ create table contatos(
 insert into contatos(nome, email, telefone, tipoTelefone) 
 	values('Osmiro', 'brunoosmar442@gmail.com', '05511910922910', 'celular');
     
-select * from contatos where nome = 'osmar';
+select * from contatos;
