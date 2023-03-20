@@ -38,12 +38,17 @@ def consultarContato():
 
     cursor = db.cursor()
 
-    querySQL = 'select * from contatos'
+    querySQL = 'select nome, email, telefone, tipoTelefone from contatos'
     cursor.execute(querySQL)
     dados = cursor.fetchall()
-    db.commit()
+    # db.commit()
 
-    contatos.listaContatos.setHeaderLabels(["nome", "email", "telefone", "tipo telefone"])
+    contatos.listaContatos.setRowCount(len(dados))
+    contatos.listaContatos.setColumnCount(4)
+
+    for i in range(len(dados)):
+        for j in range(0, 4):
+            contatos.listaContatos.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados[i][j])))
 
 def gerarPDF():
     pass
